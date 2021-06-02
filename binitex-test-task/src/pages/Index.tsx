@@ -8,7 +8,7 @@ let processResult: any;
 var covidDATA: any = '';
 let canContinue: boolean = false;
 
-class MainPages extends Component {
+class MainPage extends Component {
 
   render() {
     let forceUpdate = () => this.setState({state: this.state});
@@ -73,5 +73,5 @@ class MainPages extends Component {
   }
 }
 
-export default MainPages;
+export default MainPage;
 export { covidDATA };

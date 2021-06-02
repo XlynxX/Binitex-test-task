@@ -2,3 +2,24 @@
   height: 50vh;
   padding-top: 50vh;
 }
+
+.table-head th {
+  text-overflow: ellipsis;
+  white-space: normal;
+  text-align: center;
+  vertical-align: middle;
+  width: 150px;
+}
+
+.table-row td {
+  text-overflow: ellipsis;
+  white-space: normal;
+  text-align: center;
+  vertical-align: middle;
+  width: 150px;
+}
+
+.table-foot {
+  margin-top: 10px;
+  right: 0;
+}

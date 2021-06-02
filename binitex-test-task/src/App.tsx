@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Route, Switch, Link, Redirect } from 'react-ro
 import { Component } from 'react';
 
 // Pages
-import MainPage from './pages';
 import NotFoundPage from './pages/NotFoundPage';
-import test from './pages/test';
+import TablePage from './pages/table';
+import MainPage from './pages/Index';
 
 class App extends Component {
   
@@ -16,7 +16,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' component={MainPage}/>
           <Route exact path='/404' component={NotFoundPage}/>
-          <Route exact path='/Stats' component={test}/>
+          <Route exact path='/Stats' component={TablePage }/>
           <Redirect to="/404"/>
         </Switch>
       </Router>
