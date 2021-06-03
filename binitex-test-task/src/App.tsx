@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Route, Switch, Link, Redirect } from 'react-ro
 import { Component } from 'react';
 
 // Pages
+import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
-import TablePage from './pages/table';
-import MainPage from './pages/Index';
+import DataTable from './pages/DataTable';
 
 class App extends Component {
   
@@ -16,7 +16,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' component={MainPage}/>
           <Route exact path='/404' component={NotFoundPage}/>
-          <Route exact path='/Stats' component={TablePage }/>
+          <Route exact path='/Stats' component={DataTable}/>
           <Redirect to="/404"/>
         </Switch>
       </Router>

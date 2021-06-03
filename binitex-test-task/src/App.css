@@ -1,6 +1,11 @@
-.height {
-  height: 50vh;
-  padding-top: 50vh;
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;700&display=swap");
+
+* {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.start-btn {
+  margin-top: 20%;
 }
 
 .table-head th {
@@ -19,7 +24,3 @@
   width: 150px;
 }
 
-.table-foot {
-  margin-top: 10px;
-  right: 0;
-}

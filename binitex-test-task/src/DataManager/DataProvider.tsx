@@ -1,3 +1,4 @@
+import getNameByCode from "./CountryCode";
 import CountryCodeDictionary from "./CountryCode";
 
 class DataProvider {
@@ -11,22 +12,35 @@ class DataProvider {
     }
 
     calculate() {
-        let yr: any = 2021;
-        let dt: any = '';
-        console.log(`year: ${this.DATA[60818 - 2].year}, date: ${this.DATA[60818 - 2].dateRep}`)
-        console.log(`year: ${this.DATA[60818 - 1].year}, date: ${this.DATA[60818 - 1].dateRep}`)
-        console.log(`year: ${this.DATA[60818].year}, date: ${this.DATA[60818].dateRep}`)
-        console.log(`year: ${this.DATA[60818 + 2].year}, date: ${this.DATA[60818 + 2].dateRep}`)
-        console.log(`year: ${this.DATA[60818 + 1].year}, date: ${this.DATA[60818 + 1].dateRep}`)
-        for (let index = this.DATA.length - 1; index > 0; index--) {
+        this.sort();
+    }
+
+    getInRange(date1: Date, date2: Date) {
+        for (let index = 0; index <= this.DATA.length - 1; index++) {
             const element = this.DATA[index];
             //console.log(element.dateRep);
-            if (element.year < yr) {
-                yr = element.year;
-                dt = index;
-            }
         }
-        //console.log(yr + ' / ' + dt)
+    }
+
+    sort() {
+        this.DATA.sort(this.date_sort);
+        //this.DATA.sort(this.letterSort)
+    }
+
+    date_sort(a, b) {
+        var date_a = a.dateRep.split('/');
+        var date_b = b.dateRep.split('/');
+        return new Date(date_a[2], --date_a[1], date_a[0]).getTime() - new Date(date_b[2], --date_b[1], date_b[0]).getTime();
+    }
+
+    letterSort(a, b) {
+        const collator: Intl.Collator = new Intl.Collator('ru');
+        return function () {
+            return collator.compare(getNameByCode(a.geoId), getNameByCode(b.geoId));
+        }
+      }
+
+    test() {
     }
 }
 

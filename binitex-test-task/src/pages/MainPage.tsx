@@ -58,7 +58,7 @@ class MainPage extends Component {
 
     return (
       <div>
-        <div className="container d-flex align-items-center justify-content-center height">
+        <div className="container d-flex align-items-center justify-content-center start-btn">
           <Link to={{
           pathname: '/Stats',
           state: {records: JSON.stringify(covidDATA)}
@@ -67,7 +67,7 @@ class MainPage extends Component {
           type="button" 
           className="btn btn-primary">Начать обработку данных</Link>
         </div>
-        <div className="container mt-5">{ processResult }</div>
+        <div className="container mt-2">{ processResult }</div>
       </div>
     );
   }
