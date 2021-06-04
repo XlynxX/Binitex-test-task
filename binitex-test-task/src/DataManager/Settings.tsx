@@ -5,8 +5,8 @@ import DataProvider from "./DataProvider";
 export default class Settings {
     dataTable: DataTable;
     rawData: any;
-    firstDate: Date;
-    lastDate: Date;
+    firstDate: Date = new Date();
+    lastDate: Date = new Date();
     dataProvider: DataProvider;
     search: any = '';
     currentPage: number = 1;
@@ -19,10 +19,7 @@ export default class Settings {
         this.rawData = rawData;
         this.dataProvider = new DataProvider(rawData);
         this.dataTable = dataTable;
-        var date_start = rawData[0].dateRep.split('/');
-        this.firstDate = new Date(date_start[2], --date_start[1], date_start[0]);
-        var date_end = rawData[rawData.length - 1].dateRep.split('/');
-        this.lastDate = new Date(date_end[2], --date_end[1], date_end[0]);
+        this.setDefaultDates();
     }
 
     getRawData() { return this.dataProvider.getrawData(); }
@@ -43,4 +40,11 @@ export default class Settings {
         this.forceUpdate();
     }
     setSearchString(SearchString: any) { this.search = SearchString; }
+    
+    setDefaultDates() {
+        var date_start = this.rawData[0].dateRep.split('/');
+        this.firstDate = new Date(date_start[2], --date_start[1], date_start[0]);
+        var date_end = this.rawData[this.rawData.length - 1].dateRep.split('/');
+        this.lastDate = new Date(date_end[2], --date_end[1], date_end[0]);
+    }
 }

@@ -122,6 +122,12 @@ class DataTable extends Component {
           </div>
           <button className='btn btn-outline-primary d-inline-block me-2'>Таблица</button>
           <button className='btn btn-outline-primary d-inline-block me-2'>График</button>
+          <button onClick={ () => 
+            { 
+              settings.setSearchString('');
+              settings.setDefaultDates();
+              settings.forceUpdate(); 
+            } } className='btn btn-outline-primary d-inline-block ms-5'>Сбросить фильтры</button>
           
         </div>
           <table className='table table-striped mt-3'>
