@@ -1,4 +1,4 @@
-var ALPHABET_RU = [
+const ALPHABET_RU = [
     "А",
     "Б",
     "В",

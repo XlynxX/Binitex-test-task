@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 const COVID_DATA_URL = 'https://opendata.ecdc.europa.eu/covid19/casedistribution/json/';
@@ -74,4 +73,3 @@ class MainPage extends Component {
 }
 
 export default MainPage;
-export { covidDATA };

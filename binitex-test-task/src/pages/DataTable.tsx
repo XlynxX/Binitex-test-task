@@ -1,54 +1,46 @@
 import { Component, useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from  "react-datepicker";
 import ru from 'date-fns/locale/ru';
-import DataProvider from '../DataManager/DataProvider';
 import getNameByCode from '../DataManager/CountryCode';
+import Settings from '../DataManager/Settings';
+import { Redirect } from 'react-router-dom';
+import NoDataFound from './NoDataFound';
+import Buttons from './NextPreviousButtons';
 
 
-registerLocale('ru', ru);
-let covidDATA: any;
-let firstDate: Date;
-let lastDate: Date;
-let dataProvider: DataProvider;
-
-const redirect = () => {
-  return (
-    <Redirect to='/'></Redirect>
-  );
-}
+registerLocale('ru', ru); 
+let settings: Settings;
 
 const DatePicker_First = () => {
-  var date_start = dataProvider.DATA[0].dateRep.split('/');
-  const [startDate, setStartDate] = useState(null ? new Date() : new Date(date_start[2], --date_start[1], date_start[0]));
+  const [startDate, setStartDate] = useState(null ? new Date() : settings.getFirstDate());
   
   return (
     <DatePicker 
-    dateFormat="yyyy/MM/dd"
+    dateFormat=" yyyy/MM/dd"
     locale="ru"
     selected={startDate} 
     onChange={(date) => {
       setStartDate(date);
-      firstDate = date;
+      settings.setFirstDate(new Date(date));
     }
     } />
   );
 };
 
 const DatePicker_Second = () => {
-  var _date = dataProvider.DATA[dataProvider.DATA.length - 1].dateRep.split('/');
+  var _date = settings.getRawData()[settings.getRawData().length - 1].dateRep.split('/');
   const [startDate, setStartDate] = useState(null ? new Date() : new Date(_date[2], --_date[1], _date[0]));
   
   return (
     <DatePicker 
-    dateFormat="yyyy/MM/dd"
+    dateFormat=" yyyy/MM/dd"
     locale="ru"
     selected={startDate} 
     onChange={(date) => {
       setStartDate(date);
-      lastDate = date; }
+      settings.setLastDate(new Date(date)); }
     } />
   );
 };
@@ -57,43 +49,53 @@ class DataTable extends Component {
 
   constructor(props: any) {
     super(props);
+    // redirect to default page if no data received
     if (props.location.state == undefined) {
-      this.render = redirect;
+      this.render = () => {
+        return (
+            <Redirect to='/'></Redirect>
+          );
+    };
       this.render();
       return;
     }
-    covidDATA = JSON.parse(props.location.state.records);
-    dataProvider = new DataProvider(covidDATA);
-
-    for (let index = 0; index < covidDATA.length; index++) {
-      const element = covidDATA[index];
-      //console.log(element)
-    }
+    settings = new Settings(JSON.parse(props.location.state.records), this);
   }
   render() {
-    let forceUpdate = () => this.setState({state: this.state});
+    const searchByLetter = (string: any) => {
+      settings.getRawData().sort(settings.dataProvider.letter_sort(string));
+      settings.forceUpdate();
+    }
 
     function renderRows() {
-      dataProvider.test();
-      
+      settings.rowAmount = 0;
       var html: any = [];
-      for (let index = 0; index < 20; index++) 
-      {
-        const element = covidDATA[index];
-        if (getNameByCode(element.geoId) == '') {
+      let maxIndex = 20;
+      let SortedData: any = settings.getDataProvider().getInRange(settings.getFirstDate(), settings.getLastDate());
+      let elementId: any;
+      for (elementId in SortedData) {
+
+        if (getNameByCode(elementId) == '') {
+          maxIndex++;
           continue;
         }
+
+        settings.rowAmount++;
         html.push(
         <tr className='table-row'>
-          <td>{getNameByCode(element.geoId)}</td>
-          <td>{element.cases}</td>
-          <td>{element.deaths}</td>
-          <td>{element.deaths}</td>
-          <td>{element.deaths}</td>
-          <td>{element.deaths}</td>
-          <td>{element.deaths}</td>
+          <td>{getNameByCode(elementId)}</td>
+          <td>{SortedData[elementId].cases}</td>
+          <td>{SortedData[elementId].deaths}</td>
+          <td>{SortedData[elementId].cases}</td>
+          <td>{SortedData[elementId].deaths}</td>
+          <td>Нет данных</td>
+          <td>Нет данных</td>
         </tr>
         )
+      }
+
+      if (html == '') {
+        return ''
       }
       return html;
     }
@@ -110,13 +112,17 @@ class DataTable extends Component {
           </div>
         </div>
         <div className="container-xxl mb-2">
-        <div className="d-block w-100">
-        <div className="form-outline mb-3 mt-2">
-          <input type="search" id="form1" className="form-control" placeholder="Поиск страны..."
-          aria-label="Search" />
-        </div>
+        <div className="d-block">
+          <div className="form-outline mb-3 mt-2">
+            <input onChange={ (input: any) => {
+              //console.log(input.nativeEvent.data);
+              searchByLetter(input.nativeEvent.data);
+              } } type="search" id="form1" className="form-control d-inline-block me-2" placeholder="Поиск страны..." aria-label="Search"/>
+              
+          </div>
           <button className='btn btn-outline-primary d-inline-block me-2'>Таблица</button>
-          <button className='btn btn-outline-primary d-inline-block'>График</button>
+          <button className='btn btn-outline-primary d-inline-block me-2'>График</button>
+          
         </div>
           <table className='table table-striped mt-3'>
             <thead className='table-head table-light'>
@@ -126,23 +132,16 @@ class DataTable extends Component {
                 <th>Количество смертей</th>
                 <th>Количество случаев всего</th>
                 <th>Количество смертей всего</th>
-                <th>Количество случаев на 1000 жителей</th>
-                <th>Количество смертей на 1000 жителей</th>
+                <th>Количество случаев на 1&nbsp;000 жителей</th>
+                <th>Количество смертей на 1&nbsp;000 жителей</th>
               </tr>
             </thead>
             <tbody>
               { renderRows() }
             </tbody>
-            <tfoot>
-              
-            </tfoot>
           </table>
-          <button className='btn btn-outline-primary d-inline-block me-2'>&laquo; Назад</button>
-          <button className='btn btn-outline-primary d-inline-block me-2'>1</button>
-          <button className='btn btn-outline-primary d-inline-block me-2'>2</button>
-          <button className='btn btn-outline-primary d-inline-block me-2'>3</button>
-          <button className='btn btn-outline-primary d-inline-block me-2'>...</button>
-          <button className='btn btn-outline-primary d-inline-block'>Следующая &raquo;</button>
+          { NoDataFound(settings) }
+          { Buttons(settings) }
         </div>
         
       </div>
@@ -151,7 +150,4 @@ class DataTable extends Component {
 }
 
 export default DataTable;
-function useMyHook() {
-  throw new Error('Function not implemented.');
-}
 

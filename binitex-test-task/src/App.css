@@ -24,3 +24,17 @@
   width: 150px;
 }
 
+.NoDataFound {
+  display: flex;
+}
+
+input {
+  border: 1px solid #CED4DA;
+  border-radius: 6px;
+  color: #6C757D;
+}
+
+#form1 {
+  border-radius: 6px;
+  text-align: left;
+}
