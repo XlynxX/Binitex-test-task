@@ -1,4 +1,4 @@
-// thanks https://gist.github.com/TimeRaider/07cee3eadba26bd61718 for scrapped country codes
+// thanks https://gist.github.com/TimeRaider/07cee3eadba26bd61718 for scrapped country codes (not for each tho, some were missing)
 
 var CountryCodeDictionary = {};
 

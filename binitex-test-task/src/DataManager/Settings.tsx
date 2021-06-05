@@ -1,24 +1,23 @@
-import { Redirect } from "react-router-dom";
-import DataTable from "../pages/DataTable";
+import DataViewPage from "../pages/DataViewPage";
 import DataProvider from "./DataProvider";
 
 export default class Settings {
-    dataTable: DataTable;
+    dataViewPage: DataViewPage;
     rawData: any;
     firstDate: Date = new Date();
     lastDate: Date = new Date();
     dataProvider: DataProvider;
-    search: any = '';
+    search: any = null;
     currentPage: number = 1;
     rowAmount: number = 0;
     forceUpdate: any = () => {
-        this.dataTable.setState({state: this.dataTable.state})
+        this.dataViewPage.setState({state: this.dataViewPage.state})
     }
 
-    constructor(rawData: any, dataTable: DataTable) {
+    constructor(rawData: any, dataViewPage: DataViewPage) {
         this.rawData = rawData;
         this.dataProvider = new DataProvider(rawData);
-        this.dataTable = dataTable;
+        this.dataViewPage = dataViewPage;
         this.setDefaultDates();
     }
 
@@ -29,22 +28,28 @@ export default class Settings {
     getSearchString() { return this.search; }
 
     setRawData(rawData: any) { this.rawData = rawData; }
-    setFirstDate(FirstDate: Date) 
-    { 
+    setFirstDate(FirstDate: Date)
+    {
         this.firstDate = FirstDate;
         this.forceUpdate();
     }
-    setLastDate(LastDate: Date) 
-    { 
+    setLastDate(LastDate: Date)
+    {
         this.lastDate = LastDate;
         this.forceUpdate();
     }
-    setSearchString(SearchString: any) { this.search = SearchString; }
-    
+    setSearchString(SearchString: any) {
+        this.search = SearchString;
+    }
+
     setDefaultDates() {
         var date_start = this.rawData[0].dateRep.split('/');
         this.firstDate = new Date(date_start[2], --date_start[1], date_start[0]);
         var date_end = this.rawData[this.rawData.length - 1].dateRep.split('/');
         this.lastDate = new Date(date_end[2], --date_end[1], date_end[0]);
+    }
+
+    clearSearch() {
+        this.search = null;
     }
 }

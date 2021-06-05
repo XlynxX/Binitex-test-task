@@ -1,4 +1,4 @@
-import Settings from "../DataManager/Settings";
+import Settings from "../dataManager/Settings";
 
 export default function NoDataFound(settings: Settings) {
 

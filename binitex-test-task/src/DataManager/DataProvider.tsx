@@ -4,29 +4,29 @@ import MergedData from "./MergedData";
 
 class DataProvider {
     rawData: any;
-    SortedrawData: any;
     Number: number = 0;
+    casesArray: any = {};
+    deathsArray: any = {};
+    keyword: any = null;
     
     constructor(JSON: any) {
         this.rawData = JSON;
+        this.getAll();
         this.rawData.sort(this.date_sort);
-        //this.rawData.sort(this.letter_sort);
-        //let date1 = new Date(`${this.rawData[0].year}/${this.rawData[0].month}/${this.rawData[0].day}`);
-        //let date2 = new Date(`${this.rawData[this.rawData.length - 1].year}/${this.rawData[this.rawData.length - 1].month}/${this.rawData[this.rawData.length - 1].day}`);
-        //this.SortedrawData = this.getInRange(date1, date2);
     }
 
     getrawData() {
         return this.rawData;
     }
 
-    getSorted() {
-        return this.SortedrawData;
-    }
-
-    getInRange(date1: Date, date2: Date) {
+    getInRange(date1: Date, date2: Date, search_string: any = null) {
+        let DataArray: any = {};
         let first;
         let last;
+
+        if (date1.getTime() > date2.getTime() || date2.getTime() < date1.getTime()) {
+            return DataArray;
+        }
 
         // to get index of the first element that in the date range
         for (let index = 0; index <= this.rawData.length - 1; index++) {
@@ -48,7 +48,6 @@ class DataProvider {
             
         }
 
-        const DataArray = {};
         for (let index = first; index <= last; index++) {
 
             if (DataArray[this.rawData[index].geoId] !== undefined) {
@@ -70,7 +69,47 @@ class DataProvider {
                 continue;
             }
         }
-        return DataArray;
+        
+        // converting {} to [] to use .sort() function
+        DataArray = this.convert(DataArray);
+        
+        if (search_string != '' && search_string != null && search_string != undefined) {
+            this.keyword = search_string;
+            let result = DataArray.filter( (data) => { return getNameByCode(data.geoId).toLowerCase().includes(this.keyword.toLowerCase()) } )
+            console.log('filtered by the keyword')
+            return result;
+        }
+        console.log('sorted by alphabet')
+        return this.alphabet_sort(DataArray);
+    }
+
+    async getAll() {
+        this._getAllCases();
+        this._getAllDeaths();
+    }
+
+    _getAllCases() {
+        for (let index = 0; index <= this.rawData.length - 1; index++) {
+            this.casesArray[this.rawData[index].geoId] = 
+                this.casesArray[this.rawData[index].geoId] ? this.casesArray[this.rawData[index].geoId] + this.rawData[index].cases 
+                    : this.rawData[index].cases;
+        }
+    }
+
+    _getAllDeaths() {
+        for (let index = 0; index <= this.rawData.length - 1; index++) {
+            this.deathsArray[this.rawData[index].geoId] = 
+                this.deathsArray[this.rawData[index].geoId] ? this.deathsArray[this.rawData[index].geoId] + this.rawData[index].deaths
+                    : this.rawData[index].deaths;
+        }
+    }
+
+    getDeathsArr() {
+        return this.deathsArray;
+    }
+
+    getCasesArr() {
+        return this.casesArray;
     }
 
     date_sort(a, b) {
@@ -79,22 +118,31 @@ class DataProvider {
         return new Date(date_a[2], --date_a[1], date_a[0]).getTime() - new Date(date_b[2], --date_b[1], date_b[0]).getTime();
     }
 
-    letter_sort(search_string: any = null) {
-        return function(a, b) {
-            // genius code :)
-            // this sort json by the first letter of the country name
-            // and then adds date sort value
-            var date_a = a.dateRep.split('/');
-            var date_b = b.dateRep.split('/');
-            let dateSort = new Date(date_a[2], --date_a[1], date_a[0]).getTime() - new Date(date_b[2], --date_b[1], date_b[0]).getTime();
-            
-            if (search_string !== null && getNameByCode(a.geoId).toLowerCase().startsWith(search_string.toLowerCase())) {
-                return -999;
-            }
-            return ALPHABET_RU.indexOf(getNameByCode(a.geoId).charAt(0)) - ALPHABET_RU.indexOf(getNameByCode(b.geoId).charAt(0))
-                + dateSort;
-        }
+    alphabet_sort(data: any) {
+        
+        data.sort(function(a, b) {
+            let word_a = getNameByCode(a.geoId).replace(/\s+/g, '');
+            let word_b = getNameByCode(b.geoId).replace(/\s+/g, '');
+
+            return ALPHABET_RU.indexOf(word_a.charAt(0).toUpperCase()) - ALPHABET_RU.indexOf(word_b.charAt(0).toUpperCase());
+        })
+
+        return data;
       }
+
+    keyWordFilter(data) {
+        console.log('key: ' + this.keyword)
+        return getNameByCode(data.geoId).toLowerCase().includes(this.keyword.toLowerCase())
+    }
+    
+    convert(DataArray) {
+    let elementId: any;
+    let sorted: any = [];
+    for (elementId in DataArray) {
+        sorted.push(DataArray[elementId])
+    }
+    return sorted;
+    }
 }
 
 export default DataProvider

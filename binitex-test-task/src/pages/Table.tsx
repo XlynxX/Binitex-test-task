@@ -1,7 +1,7 @@
-import getNameByCode from "../DataManager/CountryCode";
-import Settings from "../DataManager/Settings";
+import getNameByCode from "../dataManager/CountryCode";
+import Settings from "../dataManager/Settings";
 
-export default class Table {
+export default class DaTable {
     settings: Settings;
 
     constructor(settings: Settings) {
@@ -9,35 +9,36 @@ export default class Table {
     }
     
     renderRows() {
-        this.settings.rowAmount = 0;
-        var html: any = [];
-        let maxIndex = 20;
-        let SortedData: any = this.settings.getDataProvider().getInRange(this.settings.getFirstDate(), this.settings.getLastDate());
-        let elementId: any;
-        for (elementId in SortedData) {
-  
-          if (getNameByCode(elementId) == '') {
-            maxIndex++;
-            continue;
-          }
-  
-          this.settings.rowAmount++;
+      this.settings.rowAmount = 0;
+      var html: any = [];
+      let maxIndex = 20;
+      let sortedData: any = this.settings.getDataProvider().getInRange(this.settings.getFirstDate(), this.settings.getLastDate(), this.settings.getSearchString());
+      let elementId: any;
+      for (elementId in sortedData) {
+
+        if (getNameByCode(sortedData[elementId].geoId) == '') {
+          maxIndex++;
+          continue;
+        }
+
+        this.settings.rowAmount++;
           html.push(
-          <tr className='table-row'>
-            <td>{getNameByCode(elementId)}</td>
-            <td>{SortedData[elementId].cases}</td>
-            <td>{SortedData[elementId].deaths}</td>
-            <td>{SortedData[elementId].cases}</td>
-            <td>{SortedData[elementId].deaths}</td>
-            <td>Нет данных</td>
-            <td>Нет данных</td>
-          </tr>
-          )
+            <tr className='table-row'>
+              <td>{getNameByCode(sortedData[elementId].geoId)}</td>
+              <td>{sortedData[elementId].cases}</td>
+              <td>{sortedData[elementId].deaths}</td>
+              <td>{this.settings.dataProvider.getCasesArr()[sortedData[elementId].geoId]}</td>
+              <td>{this.settings.dataProvider.getDeathsArr()[sortedData[elementId].geoId]}</td>
+              <td>Нет данных</td>
+              <td>Нет данных</td>
+            </tr>
+            )
         }
   
         if (html == '') {
           return ''
         }
+        
         return html;
       }
 
