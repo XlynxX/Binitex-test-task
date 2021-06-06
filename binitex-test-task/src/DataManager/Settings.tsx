@@ -1,7 +1,11 @@
+import LineChart from "../components/LineChart";
+import TableChart from "../components/TableChart";
 import DataViewPage from "../pages/DataViewPage";
 import DataProvider from "./DataProvider";
 
 export default class Settings {
+    Table: any;
+    Line: any;
     dataViewPage: DataViewPage;
     rawData: any;
     firstDate: Date = new Date();
@@ -10,6 +14,8 @@ export default class Settings {
     search: any = null;
     currentPage: number = 1;
     rowAmount: number = 0;
+    // 0 - table, 1 - graph
+    currentView: number = 0;
     forceUpdate: any = () => {
         this.dataViewPage.setState({state: this.dataViewPage.state})
     }
@@ -17,6 +23,8 @@ export default class Settings {
     constructor(rawData: any, dataViewPage: DataViewPage) {
         this.rawData = rawData;
         this.dataProvider = new DataProvider(rawData);
+        this.Table = new TableChart(this);
+        this.Line = new LineChart(this);
         this.dataViewPage = dataViewPage;
         this.setDefaultDates();
     }
@@ -26,6 +34,19 @@ export default class Settings {
     getLastDate() { return this.lastDate; }
     getDataProvider() { return this.dataProvider; }
     getSearchString() { return this.search; }
+    getViewNumber() { return this.currentView; }
+    
+    getView() {
+        // 0 - table, 1 - linechart
+        switch (this.currentView) {
+        case 0:
+        return this.Table.render();
+        case 1:
+        return this.Line.render();
+        default:
+        return this.Table.render();
+        }
+    }
 
     setRawData(rawData: any) { this.rawData = rawData; }
     setFirstDate(FirstDate: Date)
@@ -51,5 +72,10 @@ export default class Settings {
 
     clearSearch() {
         this.search = null;
+    }
+
+    setView(view: number) {
+        this.currentView = view;
+        return '';
     }
 }

@@ -35,6 +35,12 @@ input {
 }
 
 #form1 {
+  padding-bottom: 10px;
   border-radius: 6px;
   text-align: left;
+}
+
+input::placeholder {
+  position: absolute;
+  padding-top: 4px;
 }

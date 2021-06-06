@@ -2,6 +2,10 @@ import Settings from "../dataManager/Settings";
 
 export default function Buttons(settings: Settings) {
     
+    if (settings.getViewNumber() !== 0) {
+        return '';
+    }
+    
     var html: any = [];
     // back buttons
     html.push(<button className='btn btn-outline-primary d-inline-block me-2'>&laquo; Назад</button>)

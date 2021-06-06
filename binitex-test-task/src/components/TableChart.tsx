@@ -1,7 +1,7 @@
 import getNameByCode from "../dataManager/CountryCode";
 import Settings from "../dataManager/Settings";
 
-export default class DaTable {
+export default class TableChart {
     settings: Settings;
 
     constructor(settings: Settings) {
@@ -12,23 +12,25 @@ export default class DaTable {
       this.settings.rowAmount = 0;
       var html: any = [];
       let maxIndex = 20;
-      let sortedData: any = this.settings.getDataProvider().getInRange(this.settings.getFirstDate(), this.settings.getLastDate(), this.settings.getSearchString());
-      let elementId: any;
-      for (elementId in sortedData) {
+      let sortedData: any = this.settings.getDataProvider().getDataInRange(this.settings.getFirstDate(), this.settings.getLastDate(), this.settings.getSearchString());
 
-        if (getNameByCode(sortedData[elementId].geoId) == '') {
+      for (let i = 0; i < sortedData.length; i++) {
+
+        if (getNameByCode(sortedData[i].geoId) == '') {
           maxIndex++;
           continue;
         }
 
+        if (i >= maxIndex) break;
+
         this.settings.rowAmount++;
           html.push(
             <tr className='table-row'>
-              <td>{getNameByCode(sortedData[elementId].geoId)}</td>
-              <td>{sortedData[elementId].cases}</td>
-              <td>{sortedData[elementId].deaths}</td>
-              <td>{this.settings.dataProvider.getCasesArr()[sortedData[elementId].geoId]}</td>
-              <td>{this.settings.dataProvider.getDeathsArr()[sortedData[elementId].geoId]}</td>
+              <td>{getNameByCode(sortedData[i].geoId)}</td>
+              <td>{sortedData[i].cases}</td>
+              <td>{sortedData[i].deaths}</td>
+              <td>{this.settings.dataProvider.getCasesArr()[sortedData[i].geoId]}</td>
+              <td>{this.settings.dataProvider.getDeathsArr()[sortedData[i].geoId]}</td>
               <td>Нет данных</td>
               <td>Нет данных</td>
             </tr>

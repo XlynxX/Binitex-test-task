@@ -8,7 +8,6 @@ export default function NoDataFound(settings: Settings) {
                 <h1 className='text-center mb-3'>Данных не найдено</h1>
             </div>
         )
-        return;
     }
     return('');
     

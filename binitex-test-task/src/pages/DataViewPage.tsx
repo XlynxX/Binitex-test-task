@@ -1,18 +1,18 @@
-import { Component, useState } from 'react';
+import React, { Component, useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from  "react-datepicker";
 import ru from 'date-fns/locale/ru';
 import Settings from '../dataManager/Settings';
 import { Redirect } from 'react-router-dom';
-import NoDataFound from './NoDataFound';
-import Buttons from './NextPreviousButtons';
-import DaTable from './Table';
+import NoDataFound from '../components/NoDataFound';
+import Buttons from '../components/NextPreviousButtons';
+import SwitchViewButtons from '../components/SwitchViewButtons';
+import Search from '../components/Search';
 
 
 registerLocale('ru', ru);
 let settings: Settings;
-let Table: any;
 
 const DatePicker_First = () => {
   const [startDate, setStartDate] = useState(null ? new Date() : settings.getFirstDate());
@@ -61,13 +61,8 @@ class DataViewPage extends Component {
       return;
     }
     settings = new Settings(JSON.parse(props.location.state.records), this);
-    Table = new DaTable(settings);
   }
   render() {
-    const searchByLetter = (string: any) => {
-      settings.setSearchString(string);
-      settings.forceUpdate();
-    }
 
     const handleResetClick = (e) => {
       console.log(e)
@@ -89,22 +84,15 @@ class DataViewPage extends Component {
         </div>
         <div className="container-xxl mb-2">
         <div className="d-block">
-          <div className="form-outline mb-3 mt-2">
-            <input onChange={ (value: any) => {
-              searchByLetter(value.target.value);
-              } } type="search" id="form1" className="form-control d-inline-block me-2" placeholder="Поиск страны..." aria-label="Search"/>
-
-          </div>
-          <button className='btn btn-outline-primary d-inline-block me-2'>Таблица</button>
-          <button className='btn btn-outline-primary d-inline-block me-2'>График</button>
+          { Search(settings) }
+          { SwitchViewButtons(settings) }
           <button onClick={ handleResetClick } className='btn btn-primary d-inline-block ms-5'>Сбросить фильтры</button>
 
         </div>
-          { Table.render() }
+          { settings.getView() }
           { NoDataFound(settings) }
           { Buttons(settings) }
         </div>
-
       </div>
     );
   }

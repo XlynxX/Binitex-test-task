@@ -19,13 +19,12 @@ class DataProvider {
         return this.rawData;
     }
 
-    getInRange(date1: Date, date2: Date, search_string: any = null) {
-        let DataArray: any = {};
+    getMinMaxInRange(date1: Date, date2: Date) {
         let first;
         let last;
 
         if (date1.getTime() > date2.getTime() || date2.getTime() < date1.getTime()) {
-            return DataArray;
+            return '';
         }
 
         // to get index of the first element that in the date range
@@ -37,7 +36,6 @@ class DataProvider {
             }
             
         }
-
         // to get index of the first element that in the date range
         for (let index = this.rawData.length - 1; index >= 0; index--) {
             let elDate = new Date(`${this.rawData[index].year}/${this.rawData[index].month}/${this.rawData[index].day}`);
@@ -47,8 +45,14 @@ class DataProvider {
             }
             
         }
+        return [first, last];
+    }
 
-        for (let index = first; index <= last; index++) {
+    getDataInRange(date1: Date, date2: Date, search_string: any = null) {
+        let DataArray: any = {};
+        let minMax: any = this.getMinMaxInRange(date1, date2);
+
+        for (let index = minMax[0]; index <= minMax[1]; index++) {
 
             if (DataArray[this.rawData[index].geoId] !== undefined) {
                 DataArray[this.rawData[index].geoId] = new MergedData(
@@ -81,6 +85,52 @@ class DataProvider {
         }
         console.log('sorted by alphabet')
         return this.alphabet_sort(DataArray);
+    }
+
+    getChartStats(date1: Date, date2: Date) {
+        let minMax: any = this.getMinMaxInRange(date1, date2);
+        let DataArray: any = {};
+
+        for (let index = minMax[0]; index <= minMax[1]; index++) {
+
+            //console.log(this.rawData[index].year)
+            // if is not empty and year is the same
+            if (DataArray[this.rawData[index].month + this.rawData[index].year] !== undefined) {
+                    
+                DataArray[this.rawData[index].month + this.rawData[index].year] = { 
+                    year: this.rawData[index].year,
+                    month: this.rawData[index].month,
+                    cases: this.rawData[index].cases + DataArray[this.rawData[index].month + this.rawData[index].year].cases,
+                    deaths: this.rawData[index].deaths + DataArray[this.rawData[index].month + this.rawData[index].year].deaths
+                }
+                continue;   
+            }
+            else {
+                DataArray[this.rawData[index].month + this.rawData[index].year] = { 
+                    year: this.rawData[index].year,
+                    month: this.rawData[index].month,
+                    cases: this.rawData[index].cases,
+                    deaths: this.rawData[index].deaths
+                }
+                continue;
+            }
+        }
+
+        DataArray = this.convert(DataArray);
+        DataArray.sort(function(a, b) {
+            return (a.year + a.month) - (b.year + b.month)
+        })
+
+        return DataArray;
+        
+        /*
+        var months;
+        months = (date2.getFullYear() - date1.getFullYear()) * 12;
+        months -= date1.getMonth();
+        months += date2.getMonth();
+        return months <= 0 ? 0 : months;
+        */
+
     }
 
     async getAll() {
