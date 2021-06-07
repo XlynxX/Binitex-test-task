@@ -44,3 +44,25 @@ input::placeholder {
   position: absolute;
   padding-top: 4px;
 }
+
+.dropdown-inputs {
+  position: relative;
+  display: inline-table;
+}
+
+.dropdown-inputs input {
+  padding-top: 3px;
+  padding-bottom: 7px;
+}
+
+.dropdown-inputs input::placeholder {
+  position: absolute;
+  padding-top: 3px;
+  padding-left: 4px;
+}
+
+input:focus {
+  outline: none;
+  border:1px solid #86B7FE;
+  box-shadow: 0 0 6px #C2DBFE;
+}

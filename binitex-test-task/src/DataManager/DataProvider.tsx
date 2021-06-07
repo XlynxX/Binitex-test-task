@@ -48,7 +48,7 @@ class DataProvider {
         return [first, last];
     }
 
-    getDataInRange(date1: Date, date2: Date, search_string: any = null) {
+    getDataInRange(date1: Date, date2: Date, search_string: any = null, filterBy: any = null, filterMin: any = null, filterMax: any = null) {
         let DataArray: any = {};
         let minMax: any = this.getMinMaxInRange(date1, date2);
 
@@ -79,19 +79,55 @@ class DataProvider {
         
         if (search_string != '' && search_string != null && search_string != undefined) {
             this.keyword = search_string;
-            let result = DataArray.filter( (data) => { return getNameByCode(data.geoId).toLowerCase().includes(this.keyword.toLowerCase()) } )
-            console.log('filtered by the keyword')
-            return result;
+            DataArray = DataArray.filter( (data) => { return getNameByCode(data.geoId).toLowerCase().includes(this.keyword.toLowerCase()) } )
+            //console.log('filtered by the keyword')
+            DataArray = this.filterByMinMax(filterBy, filterMin, filterMax, DataArray);
+           
+            return DataArray;
         }
-        console.log('sorted by alphabet')
+
+        DataArray = this.filterByMinMax(filterBy, filterMin, filterMax, DataArray);
+
+        //console.log('sorted by alphabet')
         return this.alphabet_sort(DataArray);
     }
 
-    getChartStats(date1: Date, date2: Date) {
+    filterByMinMax(filterBy: any, filterMin: any, filterMax: any, data: any) {
+        if (filterBy !== null) {
+            if (filterMin !== null || filterMax !== null) {
+                if (filterBy === 'caseAmount') {
+                    //console.log('case amount filter')
+                    if (filterMin !== null) {
+                        data = data.filter(data => data.cases >= filterMin)
+                    }
+                    if (filterMax !== null) {
+                        data = data.filter(data => data.cases <= filterMax)
+                    }
+                    return data;
+                }
+                //console.log('death amount filter')
+                if (filterMin !== null) 
+                {
+                    data = data.filter(data => data.deaths >= filterMin)
+                }
+                if (filterMax !== null) 
+                {
+                    data = data.filter(data => data.deaths <= filterMax)
+                }
+            }
+        }
+        return data;
+    }
+
+    getChartStats(date1: Date, date2: Date, geoId: any = null) {
         let minMax: any = this.getMinMaxInRange(date1, date2);
         let DataArray: any = {};
 
         for (let index = minMax[0]; index <= minMax[1]; index++) {
+
+            if (geoId !== null && geoId !== 'all') {
+                if (this.rawData[index].geoId !== geoId) continue;
+            }
 
             //console.log(this.rawData[index].year)
             // if is not empty and year is the same
@@ -131,6 +167,18 @@ class DataProvider {
         return months <= 0 ? 0 : months;
         */
 
+    }
+
+    getCountries(date1: Date, date2: Date) {
+        let minMax: any = this.getMinMaxInRange(date1, date2);
+        var countryArray: any = [];
+
+        for (let i = minMax[0]; i < minMax[1]; i++) {
+            if (countryArray.indexOf(this.rawData[i].geoId) === -1) {
+                countryArray.push(this.rawData[i].geoId);
+            }
+        }
+        return countryArray;
     }
 
     async getAll() {
@@ -181,7 +229,6 @@ class DataProvider {
       }
 
     keyWordFilter(data) {
-        console.log('key: ' + this.keyword)
         return getNameByCode(data.geoId).toLowerCase().includes(this.keyword.toLowerCase())
     }
     

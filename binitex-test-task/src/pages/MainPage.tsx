@@ -23,14 +23,14 @@ class MainPage extends Component {
       processResult = setResult(true, "Подключение...");
       forceUpdate();
 
-      console.log('Sending http request...')
+      //console.log('Sending http request...')
       var request = new XMLHttpRequest();
       request.open('GET', CORS_PROXY_URL + COVID_DATA_URL, true);
       request.send();
       request.onload = () => 
       { 
         if (request.status === 200) {
-          console.log('Status code is OK');
+          //console.log('Status code is OK');
           covidDATA = JSON.parse(request.responseText).records;
           canContinue = true;
           forceUpdate();
@@ -39,7 +39,7 @@ class MainPage extends Component {
         }
       }
       request.onerror = () => {
-        console.log('Status code is not OK');
+        //console.log('Status code is not OK');
         processResult = setResult(false, "Что-то пошло не так :/");
         forceUpdate();
       }

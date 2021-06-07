@@ -65,8 +65,9 @@ class DataViewPage extends Component {
   render() {
 
     const handleResetClick = (e) => {
-      console.log(e)
+      //console.log(e)
       settings.clearSearch();
+      settings.currentPage = 1;
       settings.setDefaultDates();
       settings.forceUpdate();
     }

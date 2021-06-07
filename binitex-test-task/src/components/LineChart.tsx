@@ -41,15 +41,14 @@ export default class LineChart {
   monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
   "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
 
-  setChartData() {
+  loadChartData() {
     var categories: any = [];
     var cases: any = [];
     var deaths: any = [];
-    var chartStats = this.settings.getDataProvider().getChartStats(this.settings.getFirstDate(), this.settings.getLastDate())
+    var chartStats = this.settings.getDataProvider().getChartStats(this.settings.getFirstDate(), this.settings.getLastDate(), this.settings.getSearchCountry())
     
     let i: number = 0;
     for (let m = 0; i <= chartStats.length; i++) {
-      console.log(i)
       if (m >= 12) { m = 0; }
       categories.push(this.monthNames[m]);
       m++;
@@ -75,7 +74,7 @@ export default class LineChart {
   }
 
   render() {
-    this.setChartData();
+    this.loadChartData();
     
     return(
       <div className="container-xxl">

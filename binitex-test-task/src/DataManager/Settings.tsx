@@ -10,12 +10,20 @@ export default class Settings {
     rawData: any;
     firstDate: Date = new Date();
     lastDate: Date = new Date();
+    filterBy: any = 'caseAmount';
+    minFilter: any = null;
+    maxFilter: any = null;
     dataProvider: DataProvider;
     search: any = null;
+    chartCountrySearch: any = 'all';
     currentPage: number = 1;
+    maxPage: number = 0;
     rowAmount: number = 0;
-    // 0 - table, 1 - graph
+    
+    // 0 - table
+    // 1 - graph
     currentView: number = 0;
+    
     forceUpdate: any = () => {
         this.dataViewPage.setState({state: this.dataViewPage.state})
     }
@@ -35,6 +43,9 @@ export default class Settings {
     getDataProvider() { return this.dataProvider; }
     getSearchString() { return this.search; }
     getViewNumber() { return this.currentView; }
+    getSearchCountry() { return this.chartCountrySearch; }
+    getFilterMinMax() { return [this.minFilter, this.maxFilter] }
+    getFilter() { return this.filterBy; }
     
     getView() {
         // 0 - table, 1 - linechart
@@ -49,6 +60,8 @@ export default class Settings {
     }
 
     setRawData(rawData: any) { this.rawData = rawData; }
+    setMinFilter(num: any) { this.minFilter = num; this.forceUpdate(); }
+    setMaxFilter(num: any) { this.maxFilter = num; this.forceUpdate(); }
     setFirstDate(FirstDate: Date)
     {
         this.firstDate = FirstDate;
@@ -63,6 +76,16 @@ export default class Settings {
         this.search = SearchString;
     }
 
+    setSearchCountry(country_geoid: any) {
+        this.chartCountrySearch = country_geoid;
+        this.forceUpdate();
+    }
+
+    setFilterBy(filter_by: any) {
+        this.filterBy = filter_by;
+        this.forceUpdate();
+    }
+
     setDefaultDates() {
         var date_start = this.rawData[0].dateRep.split('/');
         this.firstDate = new Date(date_start[2], --date_start[1], date_start[0]);
@@ -72,6 +95,10 @@ export default class Settings {
 
     clearSearch() {
         this.search = null;
+        this.minFilter = null;
+        this.maxFilter = null;
+        this.chartCountrySearch = 'all'
+        //this.forceUpdate();
     }
 
     setView(view: number) {

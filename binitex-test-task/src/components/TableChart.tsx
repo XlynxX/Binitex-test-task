@@ -9,13 +9,28 @@ export default class TableChart {
     }
     
     renderRows() {
+      let maxItemsOnPage = 20;
+
       this.settings.rowAmount = 0;
       var html: any = [];
-      let maxIndex = 20;
-      let sortedData: any = this.settings.getDataProvider().getDataInRange(this.settings.getFirstDate(), this.settings.getLastDate(), this.settings.getSearchString());
+      let maxIndex = maxItemsOnPage;
+      let sortedData: any = this.settings.getDataProvider().getDataInRange(
+        this.settings.getFirstDate(),
+        this.settings.getLastDate(),
+        this.settings.getSearchString(),
+        this.settings.getFilter(),
+        this.settings.getFilterMinMax()[0],
+        this.settings.getFilterMinMax()[1]);
+      
+        let pageI = 0;
+      this.settings.maxPage = Math.floor(sortedData.length / maxItemsOnPage);
+      
+      if (this.settings.currentPage > 1) {
+        pageI = this.settings.currentPage * maxItemsOnPage;
+        maxIndex = this.settings.currentPage * maxItemsOnPage + maxItemsOnPage;
+      }
 
-      for (let i = 0; i < sortedData.length; i++) {
-
+      for (let i = pageI; i < sortedData.length; i++) {
         if (getNameByCode(sortedData[i].geoId) == '') {
           maxIndex++;
           continue;
