@@ -11,10 +11,16 @@ I really don't want to play for time, so i released unfinished version, but havi
 # How to try?
 You should have installed node.js, then:
 ```
-cd binitex-test-task
+cd Binitex-test-task
 npm start
 ```
 And you will be able to test web application [here](http://localhost:3000/).
+
+# Whats used
+This is react web application written in typescript.
+Libraries used:
+  - react-bootstrap
+  - apexcharts
 
 # Notice
 - You have to be connected to the internet to get everything working.
