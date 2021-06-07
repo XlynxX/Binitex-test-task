@@ -17,7 +17,7 @@ npm start
 And you will be able to test web application [here](http://localhost:3000/).
 
 # Whats used
-This is react web application written in typescript.
+This is react web application written in typescript.</br>
 Libraries used:
   - react-bootstrap
   - apexcharts
