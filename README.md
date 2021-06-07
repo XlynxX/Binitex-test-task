@@ -20,3 +20,6 @@ And you will be able to test web application [here](http://localhost:3000/).
 - You have to be connected to the internet to get everything working.
 
 # Some screenshots
+![alt text](https://github.com/XlynxX/Binitex-test-task/blob/main/Github_res/screenshot1.png)
+![alt text](https://github.com/XlynxX/Binitex-test-task/blob/main/Github_res/screenshot2.png)
+![alt text](https://github.com/XlynxX/Binitex-test-task/blob/main/Github_res/screenshot3.png)
