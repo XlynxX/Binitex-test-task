@@ -12,6 +12,7 @@ I really don't want to play for time, so i released unfinished version, but havi
 # How to try?
 You should have installed node.js, then:
 ```
+git clone https://github.com/XlynxX/Binitex-test-task.git (or just download by yourself)
 cd Binitex-test-task
 npm start
 ```
